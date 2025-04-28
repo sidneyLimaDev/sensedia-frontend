@@ -10,6 +10,14 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-sensedia-purple-primary: #7E50CE;
+  --color-sensedia-purple-secundary: #8556AA;
+  --color-sensedia-gray-50: #919191;
+  --color-sensedia-gray-75: #6A6A6A;
+  --color-sensedia-gray-100: #303030;
+  --color-sensedia-gray-medium-light: #9E9E9E;
+  --color-sensedia-gray-medium: #707070;
+  --color-sensedia-gray-dark: #3D3D3D;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +30,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Roboto", Helvetica, sans-serif;
 }
