@@ -1,11 +1,11 @@
 import { Header } from "./components/header";
-import UserTable from "./components/userTable";
+import UserTablePage from "./components/userTable/UserTablePage";
 
 export default function Home() {
   return (
     <div className="">
       <Header />
-      <UserTable />
+      <UserTablePage />
     </div>
   );
 }
