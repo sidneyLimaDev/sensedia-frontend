@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface User {
     id: string;
     name: string;
+    username: string;
     email: string;
-    created_at: string;
-    updated_at: string;
-    city?: string;  
-    days?: string;
+    city: string;
+    days_of_week?: string[];
+    posts?: any[];
+    albums?: any[];
 }
-
 export interface CreateUserData {
     name: string;
     email: string;

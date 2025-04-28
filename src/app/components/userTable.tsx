@@ -1,19 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { bffUserService } from "@/services/bffUserService";
 import { Toast } from "@/app/components/Toast";
 import { Dialog } from "@/app/components/Dialog";
+import { User } from "../types/user";
 
 export default function UserTable() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [users, setUsers] = useState<any[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [userToDelete, setUserToDelete] = useState<any>(null);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
@@ -21,7 +21,7 @@ export default function UserTable() {
 
   const usersPerPage = 10;
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await bffUserService.getAllUsers();
@@ -32,7 +32,7 @@ export default function UserTable() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchUsers();
@@ -40,14 +40,18 @@ export default function UserTable() {
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    const filtered = users.filter(
-      (user) =>
-        user.name.toLowerCase().includes(term.toLowerCase()) ||
-        user.username.toLowerCase().includes(term.toLowerCase())
-    );
+    const lowerTerm = term.toLowerCase();
+
+    const filtered = users.filter((user) => {
+      const name = user.name?.toLowerCase() || '';
+      const username = user.username?.toLowerCase() || '';
+      return name.includes(lowerTerm) || username.includes(lowerTerm);
+    });
+
     setFilteredUsers(filtered);
     setCurrentPage(1);
   };
+
 
   const getVisiblePages = () => {
     const visiblePages = [];
@@ -74,7 +78,7 @@ export default function UserTable() {
   const totalFilteredUsers = filteredUsers.length;
   const totalPages = Math.ceil(totalFilteredUsers / usersPerPage);
 
-  const openDeleteModal = (user: any) => {
+  const openDeleteModal = (user: User) => {
     setUserToDelete(user);
     setIsModalOpen(true);
   };
@@ -171,6 +175,7 @@ export default function UserTable() {
                     <button
                       onClick={() => openDeleteModal(user)}
                       className="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700"
+                      aria-label={`Deletar usuário ${user.name}`}
                     >
                       <Trash2 className="w-5 h-5 cursor-pointer" />
                     </button>
