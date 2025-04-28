@@ -5,6 +5,7 @@ import React from 'react'
 import Logo from '@/assets/Logo.svg';
 import LogoPurple from '@/assets/Logo-Purple.svg';
 import Image from 'next/image';
+import UserMenu from './UserMenu';
 
 
 export const Header = () => {
@@ -37,6 +38,7 @@ export const Header = () => {
                     <div className="flex items-center gap-3">
                         <CircleHelp className="w-5 h-5 text-sensedia-gray-75" />
                         <Grip className="w-5 h-5 text-sensedia-gray-75" />
+                        <UserMenu />
                     </div>
                 </nav>
 

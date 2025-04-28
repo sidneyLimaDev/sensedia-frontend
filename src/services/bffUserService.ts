@@ -250,8 +250,8 @@ export const bffUserService = {
         throw supabaseError;
       }
 
-      // 5. Retornar os dados completos do usuário
-      return {
+      // 5. Dados completos do usuário
+      const completeUserData = {
         ...createdUser,
         city: formData.city,
         days_of_week: formattedDays,
@@ -259,6 +259,17 @@ export const bffUserService = {
         posts: [],
         albums: []
       };
+
+      // 6. Salvar no LocalStorage
+      try {
+        localStorage.setItem('user', JSON.stringify(completeUserData));
+        console.log('bffUserService.createUser - Usuário salvo no LocalStorage');
+      } catch (storageError) {
+        console.error('bffUserService.createUser - Erro ao salvar no LocalStorage:', storageError);
+      }
+
+      // 7. Retornar o usuário
+      return completeUserData;
     } catch (error) {
       console.error('bffUserService.createUser - Erro completo:', error);
       throw error;
