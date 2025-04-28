@@ -1,6 +1,6 @@
 import { userService } from './userService';
 import { supabase } from '@/lib/supabase';
-import { User } from '@/app/types/user';
+import { User, UserFormData } from '@/app/types/user';
 import { postService } from './postService';
 import { albumService } from './albumService';
 import { Post } from '@/app/types/post';
@@ -162,7 +162,7 @@ export const bffUserService = {
     }
   },
 
-  // Função para bloquear um usuário
+  // Função para bloquear/deletar um usuário
   async blockUser(userId: string): Promise<void> {
     try {
       const { error } = await supabase
@@ -177,5 +177,92 @@ export const bffUserService = {
       console.error(`Erro ao bloquear o usuário ${userId}:`, error);
       throw error;
     }
-  }
+  },
+  async createUser(formData: UserFormData) {
+    try {
+      // 1. Preparar os dados para a API principal
+      const apiUserData = {
+        email: formData.email,
+        name: formData.fullName,
+        password: formData.password
+      };
+
+      console.log('bffUserService.createUser - Enviando para API principal:', apiUserData);
+
+      // 2. Criar o usuário na API principal
+      let createdUser;
+      try {
+        const response = await userService.create(apiUserData);
+        createdUser = response;
+        console.log('bffUserService.createUser - Usuário criado na API principal:', createdUser);
+      } catch (apiError) {
+        console.error('bffUserService.createUser - Erro na API principal:', apiError);
+        throw new Error(`Erro ao criar usuário na API principal: ${apiError instanceof Error ? apiError.message : 'Erro desconhecido'}`);
+      }
+
+      // Verificar se o usuário foi criado corretamente
+      if (!createdUser || !createdUser.id) {
+        console.error('bffUserService.createUser - Resposta inválida da API:', createdUser);
+        throw new Error('API retornou usuário sem ID válido');
+      }
+
+      // 3. Preparar os dados para o Supabase
+      const formattedDays = formData.days.sort((a, b) =>
+        daysOfWeekOrder.indexOf(a) - daysOfWeekOrder.indexOf(b)
+      );
+
+      const supabaseData = {
+        user_id: createdUser.id,
+        days_of_week: formattedDays,
+        city: formData.city,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        blocked: false
+      };
+
+      console.log('bffUserService.createUser - Enviando para Supabase:', supabaseData);
+
+      // 4. Salvar os dados adicionais no Supabase
+      try {
+        const { error } = await supabase
+          .from('user_data')
+          .insert([supabaseData]);
+
+        if (error) {
+          console.error(`bffUserService.createUser - Erro no Supabase:`, error);
+
+          // Se falhar no Supabase, tenta reverter criação do usuário na API principal
+          try {
+            await userService.delete(createdUser.id);
+            console.log(`bffUserService.createUser - Usuário ${createdUser.id} excluído após erro no Supabase`);
+          } catch (deleteError) {
+            console.error(`bffUserService.createUser - Erro ao excluir usuário após falha no Supabase:`, deleteError);
+          }
+
+          throw new Error(`Erro ao salvar dados adicionais: ${error.message}`);
+        }
+
+        console.log('bffUserService.createUser - Dados salvos no Supabase com sucesso');
+      } catch (supabaseError) {
+        if (!(supabaseError instanceof Error)) {
+          throw new Error('Erro desconhecido ao salvar no Supabase');
+        }
+        throw supabaseError;
+      }
+
+      // 5. Retornar os dados completos do usuário
+      return {
+        ...createdUser,
+        city: formData.city,
+        days_of_week: formattedDays,
+        username: formData.username,
+        posts: [],
+        albums: []
+      };
+    } catch (error) {
+      console.error('bffUserService.createUser - Erro completo:', error);
+      throw error;
+    }
+  },
+
 };

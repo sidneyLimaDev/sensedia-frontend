@@ -20,3 +20,13 @@ export interface UpdateUserData {
     email?: string;
     password?: string;
 }
+
+export interface UserFormData {
+    username: string;
+    fullName: string;
+    email: string;
+    city: string;
+    password: string;
+    days: string[];
+}
+

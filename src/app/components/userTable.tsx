@@ -157,12 +157,12 @@ export default function UserTable() {
               : currentUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50 group">
                   <td className="px-4 py-3">
-                    <Link href={`/usuario/${user.id}`} className="text-purple-600 hover:underline">
+                    <Link href={`/user/${user.id}`} className="text-purple-600 hover:underline">
                       {user.id}
                     </Link>
                   </td>
                   <td className="px-4 py-3">
-                    <Link href={`/usuario/${user.id}`} className="hover:text-purple-600">
+                    <Link href={`/user/${user.id}`} className="hover:text-purple-600">
                       {user.name}
                     </Link>
                   </td>
