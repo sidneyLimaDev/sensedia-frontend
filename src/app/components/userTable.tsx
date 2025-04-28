@@ -219,6 +219,20 @@ export default function UserTable() {
               PRÓXIMA
             </button>
           </div>
+          <div className="flex items-center gap-1">
+            <span className="text-sm text-gray-600">IR PARA A PAGINA</span>
+            <select
+              className="border border-gray-300 rounded-md text-sm p-1"
+              onChange={(e) => handlePageChange(Number(e.target.value))}
+              value={currentPage}
+            >
+              {[...Array(totalPages)].map((_, index) => (
+                <option key={index} value={index + 1}>
+                  {index + 1}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       )}
     </div>
