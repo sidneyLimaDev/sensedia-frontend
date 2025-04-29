@@ -1,22 +1,33 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { bffUserService } from '@/services/bffUserService'
+import { useActionState } from 'react'
+import { createUser } from '@/app/actions/userActions'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { User } from '../types/user'
+import { Check } from 'lucide-react'
+import { useFormStatus } from 'react-dom'
 
-const schema = z.object({
-    username: z.string().min(1, 'Nome de usuário é obrigatório'),
-    fullName: z.string().min(1, 'Nome completo é obrigatório'),
-    email: z.string().email('E-mail inválido'),
-    city: z.string().min(1, 'Cidade é obrigatória'),
-    password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
-    days: z.array(z.string()).nonempty('Selecione pelo menos um dia')
-});
+type FormState = {
+    success: boolean;
+    message: string;
+    errors: {
+        username?: string[];
+        fullName?: string[];
+        email?: string[];
+        city?: string[];
+        password?: string[];
+        days?: string[];
+        selectedDays?: string[];
+    };
+    user?: User;
+}
 
-type FormData = z.infer<typeof schema>
+const initialState: FormState = {
+    success: false,
+    message: '',
+    errors: {}
+}
 
 const daysOfWeek = [
     { label: 'Seg', value: 'Segunda' },
@@ -28,56 +39,66 @@ const daysOfWeek = [
     { label: 'Dom', value: 'Domingo' },
 ]
 
-export default function FormRegister() {
-    const router = useRouter()
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
-
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-        resolver: zodResolver(schema),
-        defaultValues: {
-            days: []
-        }
-    })
-
-    const onSubmit = async (data: FormData) => {
-        try {
-            setIsLoading(true)
-            setError(null)
-
-            console.log("Dados do formulário antes de enviar:", data);
-            const createdUser = await bffUserService.createUser(data);
-
-            console.log('Usuário criado com sucesso:', createdUser);
-
-            // Subistituir alert pelo Toast
-            alert('Usuário criado com sucesso!');
-
-            router.push('/login');
-        } catch (error) {
-            console.error('Erro ao criar usuário:', error);
-
-
-            const errorMessage = error instanceof Error
-                ? `Erro: ${error.message}`
-                : 'Ocorreu um erro desconhecido ao criar o usuário';
-
-            setError(errorMessage);
-
-            // Subistitui alert pelo Toast
-            alert(`Falha ao criar usuário: ${errorMessage}`);
-        } finally {
-            setIsLoading(false)
-        }
-    };
+function SubmitButton() {
+    const { pending } = useFormStatus()
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="p-8 border rounded-lg max-w-3xl mx-auto">
+        <button
+            type="submit"
+            disabled={pending}
+            className={`bg-sensedia-purple-primary text-white font-semibold py-3 px-8 cursor-pointer rounded-full transition ${pending ? 'opacity-70 cursor-not-allowed' : 'hover:bg-sensedia-purple-secundary'
+                }`}
+        >
+            {pending ? 'PROCESSANDO...' : 'REGISTRAR'}
+        </button>
+    )
+}
+
+export default function FormRegister() {
+    const router = useRouter()
+    const [selectedDays, setSelectedDays] = useState<string[]>([])
+    const [state, formAction] = useActionState<FormState, FormData>(createUser, initialState)
+
+    // Use useEffect to handle navigation after successful form submission
+    // This avoids the "setState during render" error
+    useEffect(() => {
+        if (state.success && state.user) {
+            // Save to localStorage here (client-side only)
+            try {
+                localStorage.setItem('user_id', state.user.id);
+                // You can save more user data if needed
+                localStorage.setItem('user_data', JSON.stringify({
+                    id: state.user.id,
+                    name: state.user.name,
+                    email: state.user.email
+                }));
+
+                alert('Usuário criado com sucesso!');
+                // Navigate after state update and localStorage operations
+                router.push('/user');
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+            }
+        }
+    }, [state.success, state.user, router]);
+
+    const handleDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = e.target
+
+        if (checked) {
+            setSelectedDays(prev => [...prev, value])
+        } else {
+            setSelectedDays(prev => prev.filter(day => day !== value))
+        }
+    }
+
+    return (
+        <form action={formAction} className="p-8 border rounded-lg max-w-3xl mx-auto">
             <h2 className="text-lg font-semibold text-gray-600 mb-6">REGISTRO</h2>
 
-            {error && (
+            {state.message && !state.success && (
                 <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                    {error}
+                    {state.message}
                 </div>
             )}
 
@@ -86,39 +107,48 @@ export default function FormRegister() {
                 <div className="flex-1 flex flex-col gap-6">
                     <div>
                         <input
-                            {...register('username')}
+                            name="username"
                             placeholder="Nome de usuário *"
                             className="w-full bg-gray-100 p-3 border-b border-gray-400 focus:outline-none"
                         />
-                        {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
+                        {state.errors?.username && state.errors.username.length > 0 && (
+                            <p className="text-red-500 text-sm">{state.errors.username[0]}</p>
+                        )}
                     </div>
 
                     <div>
                         <input
-                            {...register('fullName')}
+                            name="fullName"
                             placeholder="Nome completo *"
                             className="w-full bg-gray-100 p-3 border-b border-gray-400 focus:outline-none"
                         />
-                        {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName.message}</p>}
+                        {state.errors?.fullName && state.errors.fullName.length > 0 && (
+                            <p className="text-red-500 text-sm">{state.errors.fullName[0]}</p>
+                        )}
                     </div>
 
                     <div>
                         <input
-                            {...register('email')}
+                            name="email"
                             placeholder="E-mail *"
                             type="email"
                             className="w-full bg-gray-100 p-3 border-b border-gray-400 focus:outline-none"
                         />
-                        {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                        {state.errors?.email && state.errors.email.length > 0 && (
+                            <p className="text-red-500 text-sm">{state.errors.email[0]}</p>
+                        )}
                     </div>
+
                     <div>
                         <input
-                            {...register('password')}
+                            name="password"
                             placeholder="Senha *"
                             type="password"
                             className="w-full bg-gray-100 p-3 border-b border-gray-400 focus:outline-none"
                         />
-                        {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                        {state.errors?.password && state.errors.password.length > 0 && (
+                            <p className="text-red-500 text-sm">{state.errors.password[0]}</p>
+                        )}
                     </div>
                 </div>
 
@@ -126,11 +156,13 @@ export default function FormRegister() {
                 <div className="flex-1 flex flex-col gap-6">
                     <div>
                         <input
-                            {...register('city')}
+                            name="city"
                             placeholder="Cidade *"
                             className="w-full bg-gray-100 p-3 border-b border-gray-400 focus:outline-none"
                         />
-                        {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
+                        {state.errors?.city && state.errors.city.length > 0 && (
+                            <p className="text-red-500 text-sm">{state.errors.city[0]}</p>
+                        )}
                     </div>
 
                     <div>
@@ -138,35 +170,48 @@ export default function FormRegister() {
                         <div className="flex flex-wrap gap-4">
                             {daysOfWeek.map(day => (
                                 <label key={day.value} className="flex items-center space-x-2">
-                                    <input
-                                        type="checkbox"
-                                        value={day.value}
-                                        {...register('days')}
-                                        className="h-5 w-5 appearance-none border-2 border-gray-300 rounded-md checked:bg-sensedia-purple-primary checked:border-transparent focus:outline-none cursor-pointer"
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            name="days"
+                                            value={day.value}
+                                            onChange={handleDayChange}
+                                            className="h-5 w-5 appearance-none border-2 border-gray-300 rounded-md checked:bg-sensedia-purple-primary checked:border-transparent focus:outline-none cursor-pointer peer"
+                                        />
+                                        {/* Ícone de check usando Lucide */}
+                                        <Check
+                                            size={20}
+                                            className="absolute inset-0 text-white hidden peer-checked:block pointer-events-none"
+                                        />
+                                    </div>
                                     <span>{day.label}</span>
                                 </label>
                             ))}
+
                         </div>
-                        {errors.days && <p className="text-red-500 text-sm">{errors.days.message}</p>}
+                        {state.errors?.selectedDays && state.errors.selectedDays.length > 0 && (
+                            <p className="text-red-500 text-sm">{state.errors.selectedDays[0]}</p>
+                        )}
+
+                        {/* Hidden field to send selected days */}
+                        {selectedDays.map((day, index) => (
+                            <input
+                                key={index}
+                                type="hidden"
+                                name="selectedDays"
+                                value={day}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
 
             <div className="flex items-center mt-8 space-x-4">
-                <button
-                    type="submit"
-                    disabled={isLoading}
-                    className={`bg-sensedia-purple-primary text-white font-semibold py-3 px-8 rounded-full transition ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-sensedia-purple-secundary'
-                        }`}
-                >
-                    {isLoading ? 'PROCESSANDO...' : 'REGISTRAR'}
-                </button>
+                <SubmitButton />
                 <button
                     type="button"
-                    className="text-sensedia-purple-primary font-semibold hover:underline"
+                    className="text-sensedia-purple-primary font-semibold hover:underline cursor-pointer"
                     onClick={() => router.push('/user')}
-                    disabled={isLoading}
                 >
                     CANCELAR
                 </button>

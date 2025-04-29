@@ -15,7 +15,7 @@ export default function UserMenu() {
     const router = useRouter()
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user")
+        const storedUser = localStorage.getItem("user_data")
         if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser)
@@ -74,7 +74,7 @@ export default function UserMenu() {
                     {getInitials(user.fullName)}
                 </div>
                 <span className="text-sm hidden md:inline">
-                    {user.username}
+                    {user.fullName}
                 </span>
                 <ChevronDown className="w-4 h-4" />
             </button>
