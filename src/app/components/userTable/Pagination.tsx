@@ -1,3 +1,7 @@
+// components/UserTable/Pagination.tsx
+import { useState } from "react";
+import { ChevronUp, ChevronDown } from "lucide-react";
+
 type PaginationProps = {
     currentPage: number;
     totalPages: number;
@@ -8,15 +12,19 @@ type PaginationProps = {
 
 const Pagination = ({ currentPage, totalPages, totalFilteredUsers, handlePageChange, getVisiblePages }: PaginationProps) => {
     const visiblePages = getVisiblePages();
+    const [isSelectOpen, setIsSelectOpen] = useState(false);
 
     return (
-        <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-1">
-                <span className="text-sm text-gray-600">TOTAL {totalFilteredUsers}</span>
+        <div className="flex items-center justify-between pt-6">
+            {/* Lado esquerdo com largura fixa */}
+            <div className="flex items-center gap-1 w-48">
+                <span className="text-sm text-sensedia-gray-medium">TOTAL {totalFilteredUsers}</span>
             </div>
+
+            {/* Navegação de páginas centralizada */}
             <div className="flex items-center gap-4">
                 <button
-                    className="px-4 py-1 border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-50"
+                    className="px-4 py-2 border cursor-pointer border-sensedia-gray-medium-light rounded-full text-sm text-sensedia-gray-medium hover:bg-gray-50"
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                 >
@@ -26,34 +34,26 @@ const Pagination = ({ currentPage, totalPages, totalFilteredUsers, handlePageCha
                 <div className="flex">
                     {visiblePages.map((page, index) => {
                         if (typeof page === "number") {
-                            // Base classes for all number buttons
-                            let buttonClasses = "h-8 w-8 flex items-center justify-center border border-gray-300 text-sm ";
+                            let buttonClasses = "h-10 w-10 flex items-center justify-center border border-sensedia-gray-medium-light text-sm ";
 
-                            // Determine if this is part of a continuous group
                             const prevIsNumber = index > 0 && typeof visiblePages[index - 1] === "number";
                             const nextIsNumber = index < visiblePages.length - 1 && typeof visiblePages[index + 1] === "number";
 
-                            // Rounded corners logic
                             if (!prevIsNumber && !nextIsNumber) {
-                                // Standalone button
                                 buttonClasses += "rounded-full ";
                             } else if (!prevIsNumber) {
-                                // First button in a group
                                 buttonClasses += "rounded-l-full ";
                             } else if (!nextIsNumber) {
-                                // Last button in a group
                                 buttonClasses += "rounded-r-full ";
                                 buttonClasses += "-ml-px ";
                             } else {
-                                // Middle button in a group
                                 buttonClasses += "-ml-px ";
                             }
 
-                            // Current page styling
                             if (page === currentPage) {
-                                buttonClasses += "bg-gray-500 text-white border-gray-500 z-10 ";
+                                buttonClasses += " bg-sensedia-gray-medium-light text-white border-sensedia-gray-medium-light z-10 ";
                             } else {
-                                buttonClasses += "text-gray-600 hover:bg-gray-50 ";
+                                buttonClasses += " cursor-pointer text-sensedia-gray-medium0 hover:bg-gray-50 ";
                             }
 
                             return (
@@ -66,9 +66,8 @@ const Pagination = ({ currentPage, totalPages, totalFilteredUsers, handlePageCha
                                 </button>
                             );
                         } else {
-                            // Ellipsis styling
                             return (
-                                <span key={index} className="w-6 flex items-center justify-center text-sm text-gray-600">
+                                <span key={index} className="w-6 flex items-center justify-center text-sm text-sensedia-gray-medium">
                                     {page}
                                 </span>
                             );
@@ -77,26 +76,39 @@ const Pagination = ({ currentPage, totalPages, totalFilteredUsers, handlePageCha
                 </div>
 
                 <button
-                    className="px-4 py-1 border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-50"
+                    className="px-4 py-2 border cursor-pointer border-sensedia-gray-medium-light rounded-full text-sm text-sensedia-gray-medium hover:bg-gray-50"
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                 >
                     PRÓXIMO
                 </button>
             </div>
-            <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">IR PARA A PÁGINA</span>
-                <select
-                    className="border border-gray-300 rounded-md text-sm p-1 w-12 text-center"
-                    onChange={(e) => handlePageChange(Number(e.target.value))}
-                    value={currentPage}
-                >
-                    {[...Array(totalPages)].map((_, index) => (
-                        <option key={index} value={index + 1}>
-                            {index + 1}
-                        </option>
-                    ))}
-                </select>
+
+            {/* Lado direito com a mesma largura do lado esquerdo */}
+            <div className="flex items-center justify-end w-48">
+                <span className="text-sm text-gray-600 w-18">IR PARA A PÁGINA</span>
+                <div className="relative">
+                    <select
+                        className="text-sm font-medium text-gray-700 border-0 border-b-2 border-sensedia-gray-medium-light cursor-pointer appearance-none py-1 pr-8 w-16 text-center focus:outline-none focus:border-sensedia-gray-medium-light"
+                        onChange={(e) => handlePageChange(Number(e.target.value))}
+                        value={currentPage}
+                        onFocus={() => setIsSelectOpen(true)}
+                        onBlur={() => setIsSelectOpen(false)}
+                    >
+                        {[...Array(totalPages)].map((_, index) => (
+                            <option key={index} value={index + 1}>
+                                {index + 1}
+                            </option>
+                        ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                        {isSelectOpen ? (
+                            <ChevronUp size={16} className="text-gray-500" />
+                        ) : (
+                            <ChevronDown size={16} className="text-gray-500" />
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

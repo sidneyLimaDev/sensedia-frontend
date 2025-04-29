@@ -92,7 +92,7 @@ export default function FormRegister() {
 
     return (
         <form action={formAction} className="p-8 border border-gray-200 rounded-lg  w-full">
-            <h2 className="text-lg font-semibold text-gray-600 mb-6">REGISTRO</h2>
+            <h2 className="text-lg font-semibold text-sensedia-gray-50 mb-6">REGISTRO</h2>
 
             {state.message && !state.success && (
                 <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -191,7 +191,6 @@ export default function FormRegister() {
                             <p className="text-red-500 text-sm">{state.errors.selectedDays[0]}</p>
                         )}
 
-                        {/* Hidden field to send selected days */}
                         {selectedDays.map((day, index) => (
                             <input
                                 key={index}

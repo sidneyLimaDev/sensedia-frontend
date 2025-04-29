@@ -11,8 +11,8 @@ export function UserAlbums({ user }: UserAlbumsProps) {
             {user.albums && user.albums.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {user.albums.map((album) => (
-                        <div key={album.id} className="border rounded-lg overflow-hidden bg-gray-50">
-                            <div className="h-32 bg-gray-200 flex items-center justify-center">
+                        <div key={album.id} className="border border-sensedia-gray-25 rounded-lg overflow-hidden bg-gray-50">
+                            <div className="h-32 bg-sensedia-gray-25 flex items-center justify-center">
                                 <Image size={48} className="text-gray-400" />
                             </div>
                             <div className="p-4">

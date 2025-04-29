@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { ChevronRight } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import React from 'react'
+import Polygon from '@/assets/Polygon.svg'
+import Image from 'next/image'
 
 export const Breadcrumbs = () => {
     const pathname = usePathname()
@@ -19,15 +20,12 @@ export const Breadcrumbs = () => {
 
     return (
         <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Link href="/" className="hover:underline">
-                Home
-            </Link>
 
             {breadcrumbs.map((crumb, index) => (
                 <React.Fragment key={crumb.href}>
-                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                    <Image src={Polygon} alt={''} width={6} />
                     {index === breadcrumbs.length - 1 ? (
-                        <span className="text-gray-400 capitalize">{crumb.label}</span> // Último: texto
+                        <span className="text-gray-400 capitalize">{crumb.label}</span>
                     ) : (
                         <Link href={crumb.href} className="hover:underline capitalize">
                             {crumb.label}

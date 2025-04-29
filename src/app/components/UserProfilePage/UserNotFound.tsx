@@ -6,7 +6,7 @@ export function UserNotFound() {
             <div className="flex flex-col items-center gap-4 py-12">
                 <h1 className="text-2xl font-bold">Usuário não encontrado</h1>
                 <p className="text-gray-600">O usuário que você procura não existe ou foi excluído.</p>
-                <Link href="/users" className="mt-4 text-purple-600 hover:underline">
+                <Link href="/users" className="mt-4 text-sensedia-purple-primary hover:underline">
                     Voltar para a lista de usuários
                 </Link>
             </div>

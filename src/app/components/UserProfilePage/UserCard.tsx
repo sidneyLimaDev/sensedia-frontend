@@ -10,7 +10,7 @@ export function UserCard({ user }: UserCardProps) {
     return (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
             <div className="flex flex-col items-center mb-6">
-                <div className="bg-purple-600 rounded-full w-24 h-24 flex items-center justify-center text-white text-4xl font-bold mb-4">
+                <div className="bg-sensedia-purple-primary rounded-full w-24 h-24 flex items-center justify-center text-white text-4xl font-bold mb-4">
                     {getInitials(user.name)}
                 </div>
                 <h1 className="text-2xl font-bold">{user.name}</h1>

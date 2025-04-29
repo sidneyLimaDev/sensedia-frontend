@@ -105,7 +105,7 @@ export default function UserTablePage() {
     };
 
     return (
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+        <div className="bg-white  overflow-hidden">
             {toastMessage && <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage(null)} />}
             <Dialog
                 isOpen={isModalOpen}

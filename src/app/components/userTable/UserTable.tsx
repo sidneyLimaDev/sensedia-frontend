@@ -11,10 +11,10 @@ type UserTableProps = {
 
 const UserTable = ({ isLoading, currentUsers, openDeleteModal }: UserTableProps) => {
     return (
-        <div className="overflow-x-auto" style={{ maxHeight: "300px", overflowY: "auto" }}>
+        <div className="overflow-x-auto border-b-[1px] border-sensedia-gray-25" style={{ maxHeight: "500px", overflowY: "auto" }}>
             <table className="w-full text-sm">
-                <thead className="bg-gray-50 text-gray-600 uppercase text-xs sticky top-0">
-                    <tr>
+                <thead className=" uppercase text-xs sticky -top-1 ">
+                    <tr className="bg-gray-50 text-[#919191] border-y-[1px] border-gray-200">
                         <th className="px-4 py-3 text-left">USER</th>
                         <th className="px-4 py-3 text-left">Nome</th>
                         <th className="px-4 py-3 text-left">E-mail</th>
@@ -25,7 +25,7 @@ const UserTable = ({ isLoading, currentUsers, openDeleteModal }: UserTableProps)
                         <th className="px-4 py-3 text-center"></th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 ">
                     {isLoading
                         ? Array.from({ length: 10 }).map((_, index) => (
                             <tr key={index}>
@@ -39,7 +39,7 @@ const UserTable = ({ isLoading, currentUsers, openDeleteModal }: UserTableProps)
                         : currentUsers.map((user) => (
                             <tr key={user.id} className="hover:bg-gray-50 group">
                                 <td className="px-4 py-3">
-                                    <Link href={`/user/${user.id}`} className="text-purple-600 hover:underline">
+                                    <Link href={`/user/${user.id}`} className="font-bold  hover:text-purple-600 hover:underline">
                                         {user.id}
                                     </Link>
                                 </td>

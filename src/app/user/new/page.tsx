@@ -1,62 +1,19 @@
+import { BannerItemSecundary } from '@/app/components/BannerItem'
 import FormRegister from '@/app/components/FormRegister'
 import React from 'react'
+import LifeRing from '@/assets/life-ring.svg'
+import HeartBeat from '@/assets/heartbeat.svg'
+import GrinAlt from '@/assets/grin-alt.svg'
 
 const page = () => {
     return (
         <div>
             <div className='max-w-[875px] mx-auto'>
-                <h1 className='text-3xl font-medium'>Registro</h1>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div className="flex gap-3 items-start">
-                        <div>
-                            <h3 className="text-purple-600 font-medium text-sm">Precisa de ajuda?</h3>
-                            <div className='flex'>
-                                <div className='flex items-center'>
-                                    <div className="bg-purple-100 p-2 rounded-full">
-                                        <div className="w-6 h-6 text-purple-600">?</div>
-                                    </div>
-                                </div>
-                                <p className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                                    dolore magna aliqua.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex gap-3 items-start">
-                        <div>
-                            <h3 className="text-purple-600 font-medium text-sm">Por que se registrar?</h3>
-                            <div className='flex'>
-                                <div className='flex items-center'>
-                                    <div className="bg-purple-100 p-2 rounded-full">
-                                        <div className="w-6 h-6 text-purple-600">?</div>
-                                    </div>
-                                </div>
-                                <p className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                                    dolore magna aliqua.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex gap-3 items-start">
-                        <div>
-                            <h3 className="text-purple-600 font-medium text-sm">O que está acontecendo?...</h3>
-                            <div className='flex'>
-                                <div className='flex items-center'>
-                                    <div className="bg-purple-100 p-2 rounded-full">
-                                        <div className="w-6 h-6 text-purple-600">?</div>
-                                    </div>
-                                </div>
-                                <p className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                                    dolore magna aliqua.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-
+                <h1 className='text-3xl font-medium mt-8'>Registro</h1>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-8">
+                    <BannerItemSecundary title={'Precisa de ajuda?'} description={'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} Icon={LifeRing} />
+                    <BannerItemSecundary title={'Por que se registrar?'} description={'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} Icon={HeartBeat} />
+                    <BannerItemSecundary title={'O que está acontecendo?...'} description={'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} Icon={GrinAlt} />
                 </div>
             </div>
             <div className='flex justify-center max-w-[875px] mx-auto'>

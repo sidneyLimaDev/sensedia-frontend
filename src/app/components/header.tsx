@@ -24,10 +24,12 @@ export const Header = () => {
             <div>
                 <nav className="bg-white border-b border-gray-200 px-8 py-2 flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-1">
-                            <Image src={LogoPurple} alt="Logo" width={30} height={30} />
-                            <span className="text-sm font-medium text-sensedia-purple-secundary">BEM-VINDO</span>
-                        </div>
+                        <Link href="/">
+                            <div className="flex items-center gap-1">
+                                <Image src={LogoPurple} alt="Logo" width={30} height={30} />
+                                <span className="text-sm font-medium text-sensedia-purple-secundary">BEM-VINDO</span>
+                            </div>
+                        </Link>
 
                         <Breadcrumbs />
                     </div>

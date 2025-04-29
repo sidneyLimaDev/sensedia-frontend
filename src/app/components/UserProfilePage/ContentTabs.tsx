@@ -17,7 +17,7 @@ export function ContentTabs({ user }: ContentTabsProps) {
                 <div className="flex">
                     <button
                         className={`px-6 py-3 font-medium text-sm ${activeTab === "posts"
-                            ? "border-b-2 border-purple-600 text-purple-600"
+                            ? "border-b-2 border-sensedia-purple-primary text-sensedia-purple-primary"
                             : "text-gray-500 hover:text-gray-700"
                             }`}
                         onClick={() => setActiveTab("posts")}
@@ -29,7 +29,7 @@ export function ContentTabs({ user }: ContentTabsProps) {
                     </button>
                     <button
                         className={`px-6 py-3 font-medium text-sm ${activeTab === "albums"
-                            ? "border-b-2 border-purple-600 text-purple-600"
+                            ? "border-b-2 border-sensedia-purple-primary text-sensedia-purple-primary"
                             : "text-gray-500 hover:text-gray-700"
                             }`}
                         onClick={() => setActiveTab("albums")}
