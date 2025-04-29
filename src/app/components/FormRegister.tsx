@@ -176,7 +176,6 @@ export default function FormRegister() {
                                             onChange={handleDayChange}
                                             className="h-5 w-5 appearance-none border-2 border-gray-300 rounded-md checked:bg-sensedia-purple-primary checked:border-transparent focus:outline-none cursor-pointer peer"
                                         />
-                                        {/* Ícone de check usando Lucide */}
                                         <Check
                                             size={20}
                                             className="absolute inset-0 text-white hidden peer-checked:block pointer-events-none"
