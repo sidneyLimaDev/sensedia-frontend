@@ -7,10 +7,10 @@ type SearchBarProps = {
 
 const SearchBar = ({ searchTerm, handleSearch }: SearchBarProps) => {
     return (
-        <div className="relative">
+        <div className="relative mb-4">
             <input
                 type="text"
-                placeholder="Buscar por nome ou username"
+                placeholder="Procurar"
                 className="w-full p-2 pl-3 pr-10 border border-gray-300 rounded-md"
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}

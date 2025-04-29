@@ -1,12 +1,11 @@
-
 import { CircleHelp, Grip } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
-import Logo from '@/assets/Logo.svg';
-import LogoPurple from '@/assets/Logo-Purple.svg';
-import Image from 'next/image';
-import UserMenu from './UserMenu';
-
+import Logo from '@/assets/Logo.svg'
+import LogoPurple from '@/assets/Logo-Purple.svg'
+import Image from 'next/image'
+import UserMenu from './UserMenu'
+import { Breadcrumbs } from './Breadcrumbs'
 
 export const Header = () => {
     return (
@@ -19,29 +18,26 @@ export const Header = () => {
                         </div>
                     </Link>
                 </div>
-                <div>
-
-                </div>
+                <div></div>
             </div>
-            <div>
 
+            <div>
                 <nav className="bg-white border-b border-gray-200 px-8 py-2 flex items-center justify-between">
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-1">
                             <Image src={LogoPurple} alt="Logo" width={30} height={30} />
                             <span className="text-sm font-medium text-sensedia-purple-secundary">BEM-VINDO</span>
                         </div>
-                        <Link href="/registro" className="text-sm">
-                            Registro
-                        </Link>
+
+                        <Breadcrumbs />
                     </div>
+
                     <div className="flex items-center gap-3">
                         <CircleHelp className="w-5 h-5 text-sensedia-gray-75" />
                         <Grip className="w-5 h-5 text-sensedia-gray-75" />
                         <UserMenu />
                     </div>
                 </nav>
-
             </div>
         </header>
     )

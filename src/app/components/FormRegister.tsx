@@ -59,14 +59,12 @@ export default function FormRegister() {
     const [selectedDays, setSelectedDays] = useState<string[]>([])
     const [state, formAction] = useActionState<FormState, FormData>(createUser, initialState)
 
-    // Use useEffect to handle navigation after successful form submission
-    // This avoids the "setState during render" error
     useEffect(() => {
         if (state.success && state.user) {
-            // Save to localStorage here (client-side only)
+
             try {
                 localStorage.setItem('user_id', state.user.id);
-                // You can save more user data if needed
+
                 localStorage.setItem('user_data', JSON.stringify({
                     id: state.user.id,
                     name: state.user.name,
@@ -74,7 +72,7 @@ export default function FormRegister() {
                 }));
 
                 alert('Usuário criado com sucesso!');
-                // Navigate after state update and localStorage operations
+
                 router.push('/user');
             } catch (error) {
                 console.error('Error saving to localStorage:', error);
@@ -93,7 +91,7 @@ export default function FormRegister() {
     }
 
     return (
-        <form action={formAction} className="p-8 border rounded-lg max-w-3xl mx-auto">
+        <form action={formAction} className="p-8 border border-gray-200 rounded-lg  w-full">
             <h2 className="text-lg font-semibold text-gray-600 mb-6">REGISTRO</h2>
 
             {state.message && !state.success && (

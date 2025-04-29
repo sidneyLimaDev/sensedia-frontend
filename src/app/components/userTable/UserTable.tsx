@@ -1,4 +1,3 @@
-// components/UserTable/UserTable.tsx
 import { User } from "@/app/types/user";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
