@@ -140,12 +140,11 @@ export async function createUser(prevState, formData) {
 
         // 6. Em vez de LocalStorage (que não existe no servidor), usar cookies
         try {
-            // Cria um cookie seguro com informações básicas do usuário (não a senha)
             cookies().set('user_id', createdUser.id, {
                 secure: process.env.NODE_ENV === 'production',
                 httpOnly: true,
                 sameSite: 'strict',
-                maxAge: 60 * 60 * 24 * 7 // 1 semana
+                maxAge: 60 * 60 * 24 * 7
             });
 
             console.log('createUser - ID do usuário salvo nos cookies');
@@ -154,11 +153,7 @@ export async function createUser(prevState, formData) {
             // Não falhar a operação se os cookies falharem
         }
 
-        // 7. Remover manipulação de localStorage do lado do servidor
-        // localStorage só pode ser acessado no cliente, portanto
-        // foi movido para o componente React (FormRegister)
-
-        // 8. Retornar sucesso
+        // 7. Retornar sucesso
         return {
             success: true,
             message: 'Usuário criado com sucesso',

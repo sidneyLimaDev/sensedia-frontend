@@ -12,7 +12,7 @@ export function BannerItem({ title, description, Icon }: BannerItemProps) {
 
 
     return (
-        <div className="flex h-full gap-4 items-center">
+        <div className="flex h-full gap-4 md:items-center ">
             <div>
                 <Image src={Icon} alt="Logo" width={52} height={52} />
             </div>
@@ -31,7 +31,7 @@ export function BannerItemSecundary({ title, description, Icon }: BannerItemProp
         <div className="flex gap-3 items-start">
             <div>
                 <h3 className="text-purple-600 font-medium text-base">{title}</h3>
-                <div className='flex gap-4 mt-2'>
+                <div className='flex gap-4 mt-2 '>
                     <div className='flex items-center'>
                         <Image src={Icon} alt="Logo" width={52} height={52} />
                     </div>

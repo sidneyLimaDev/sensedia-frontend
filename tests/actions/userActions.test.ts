@@ -1,38 +1,59 @@
-/**
- * @jest/globals
- * @jest-environment node
- */
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { userService } from '@/services/userService';
 import { supabase } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { createUser } from '@/app/actions/userActions';
 
-// Mocks
+// Definições de tipos para adequação do código
+type User = {
+    id: string;
+    name: string;
+    email: string;
+    [key: string]: any;
+};
+
+
+type MockFormDataContent = {
+    [key: string]: string | string[];
+};
+
+// Mocks com tipagem adequada
 jest.mock('@/services/userService', () => ({
     userService: {
-        create: jest.fn(),
-        delete: jest.fn()
+        create: jest.fn() as jest.MockedFunction<typeof userService.create>,
+        delete: jest.fn() as jest.MockedFunction<typeof userService.delete>
     }
 }));
 
-jest.mock('@/lib/supabase', () => ({
-    supabase: {
-        from: jest.fn().mockReturnThis()
-    }
-}));
+jest.mock('@/lib/supabase', () => {
+    const mockFrom = jest.fn().mockReturnThis();
+    const mockInsert = jest.fn();
 
-jest.mock('next/headers', () => ({
-    cookies: jest.fn().mockReturnValue({
-        set: jest.fn()
-    })
-}));
+    return {
+        supabase: {
+            from: mockFrom.mockImplementation(() => ({
+                insert: mockInsert
+            }))
+        }
+    };
+});
 
-// Helper para criar FormData para testes
-function createMockFormData(data) {
+jest.mock('next/headers', () => {
+    const mockSet = jest.fn();
+    const mockCookies = jest.fn().mockReturnValue({
+        set: mockSet
+    });
+
+    return {
+        cookies: mockCookies
+    };
+});
+
+// Helper para criar FormData para testes com tipagem correta
+function createMockFormData(data: MockFormDataContent) {
     const formData = {
-        get: jest.fn(key => data[key]),
-        getAll: jest.fn(key => Array.isArray(data[key]) ? data[key] : [data[key]])
+        get: jest.fn((key: string) => data[key]),
+        getAll: jest.fn((key: string) => Array.isArray(data[key]) ? data[key] : [data[key]])
     };
     return formData;
 }
@@ -77,23 +98,28 @@ describe('createUser action', () => {
         });
 
         // Mock da resposta da API de usuário
-        const mockUser = { id: 'user123', name: 'Test User', email: 'test@example.com' };
-        userService.create.mockResolvedValue(mockUser);
+        const mockUser: User = { id: 'user123', name: 'Test User', email: 'test@example.com' };
+        (userService.create as jest.Mock).mockResolvedValue(mockUser);
 
         // Mock da resposta do Supabase
         const insertMock = jest.fn().mockResolvedValue({ error: null });
-        supabase.from.mockReturnValue({
+        (supabase.from as jest.Mock).mockImplementation(() => ({
             insert: insertMock
-        });
+        }));
 
         const result = await createUser({}, mockFormData);
 
         // Verificações de sucesso
         expect(result.success).toBe(true);
         expect(result.message).toBe('Usuário criado com sucesso');
-        expect(result.user).toHaveProperty('id', 'user123');
-        expect(result.user.city).toBe('Test City');
-        expect(result.user.days_of_week).toEqual(['Segunda', 'Quarta', 'Sexta']);
+        // Usamos verificação condicional para evitar o erro de 'possibly undefined'
+        if (result.user) {
+            expect(result.user).toHaveProperty('id', 'user123');
+            expect(result.user.city).toBe('Test City');
+            expect(result.user.days_of_week).toEqual(['Segunda', 'Quarta', 'Sexta']);
+        } else {
+            fail('O usuário não deveria ser undefined');
+        }
 
         // Verificar chamadas para os serviços
         expect(userService.create).toHaveBeenCalledWith({
@@ -103,7 +129,7 @@ describe('createUser action', () => {
         });
 
         expect(supabase.from).toHaveBeenCalledWith('user_data');
-        expect(cookies().set).toHaveBeenCalledWith('user_id', 'user123', expect.any(Object));
+        expect((await cookies()).set).toHaveBeenCalledWith('user_id', 'user123', expect.any(Object));
     });
 
     it('deve ordenar os dias da semana corretamente', async () => {
@@ -118,19 +144,23 @@ describe('createUser action', () => {
         });
 
         // Mock da resposta da API de usuário
-        const mockUser = { id: 'user123', name: 'Test User', email: 'test@example.com' };
-        userService.create.mockResolvedValue(mockUser);
+        const mockUser: User = { id: 'user123', name: 'Test User', email: 'test@example.com' };
+        (userService.create as jest.Mock).mockResolvedValue(mockUser);
 
         // Mock da resposta do Supabase
         const insertMock = jest.fn().mockResolvedValue({ error: null });
-        supabase.from.mockReturnValue({
+        (supabase.from as jest.Mock).mockImplementation(() => ({
             insert: insertMock
-        });
+        }));
 
         const result = await createUser({}, mockFormData);
 
         // Verificar a ordenação dos dias da semana (Segunda, Quarta, Domingo)
-        expect(result.user.days_of_week).toEqual(['Segunda', 'Quarta', 'Domingo']);
+        if (result.user) {
+            expect(result.user.days_of_week).toEqual(['Segunda', 'Quarta', 'Domingo']);
+        } else {
+            fail('O usuário não deveria ser undefined');
+        }
 
         // Verificar dados enviados para o Supabase
         expect(supabase.from).toHaveBeenCalledWith('user_data');
@@ -153,14 +183,14 @@ describe('createUser action', () => {
 
         // Simular erro na API principal
         const apiError = new Error('Falha na API principal');
-        userService.create.mockRejectedValue(apiError);
+        (userService.create as jest.Mock).mockRejectedValue(apiError);
 
         const result = await createUser({}, mockFormData);
 
         expect(result.success).toBe(false);
         expect(result.message).toContain('Erro ao criar usuário na API principal');
         expect(supabase.from).not.toHaveBeenCalled();
-        expect(cookies().set).not.toHaveBeenCalled();
+        expect((await cookies()).set).not.toHaveBeenCalled();
     });
 
     it('deve tratar erro no Supabase e tentar reverter criação do usuário', async () => {
@@ -174,14 +204,14 @@ describe('createUser action', () => {
         });
 
         // Mock da resposta da API de usuário
-        const mockUser = { id: 'user123', name: 'Test User', email: 'test@example.com' };
-        userService.create.mockResolvedValue(mockUser);
+        const mockUser: User = { id: 'user123', name: 'Test User', email: 'test@example.com' };
+        (userService.create as jest.Mock).mockResolvedValue(mockUser);
 
         // Simular erro no Supabase
         const insertMock = jest.fn().mockResolvedValue({ error: { message: 'Erro no Supabase' } });
-        supabase.from.mockReturnValue({
+        (supabase.from as jest.Mock).mockImplementation(() => ({
             insert: insertMock
-        });
+        }));
 
         const result = await createUser({}, mockFormData);
 
@@ -190,7 +220,7 @@ describe('createUser action', () => {
 
         // Verificar que a exclusão do usuário foi tentada
         expect(userService.delete).toHaveBeenCalledWith('user123');
-        expect(cookies().set).not.toHaveBeenCalled();
+        expect((await cookies()).set).not.toHaveBeenCalled();
     });
 
     it('deve lidar com erro nos cookies sem falhar a operação', async () => {
@@ -204,14 +234,14 @@ describe('createUser action', () => {
         });
 
         // Mock da resposta da API de usuário
-        const mockUser = { id: 'user123', name: 'Test User', email: 'test@example.com' };
-        userService.create.mockResolvedValue(mockUser);
+        const mockUser: User = { id: 'user123', name: 'Test User', email: 'test@example.com' };
+        (userService.create as jest.Mock).mockResolvedValue(mockUser);
 
         // Mock da resposta do Supabase
         const insertMock = jest.fn().mockResolvedValue({ error: null });
-        supabase.from.mockReturnValue({
+        (supabase.from as jest.Mock).mockImplementation(() => ({
             insert: insertMock
-        });
+        }));
 
         // Simular erro ao definir cookies
         const cookiesInstance = {
@@ -219,7 +249,7 @@ describe('createUser action', () => {
                 throw new Error('Erro ao definir cookie');
             })
         };
-        cookies.mockReturnValue(cookiesInstance);
+        (cookies as jest.Mock).mockReturnValue(cookiesInstance);
 
         const result = await createUser({}, mockFormData);
 
@@ -239,7 +269,7 @@ describe('createUser action', () => {
         });
 
         // API retorna resposta sem ID
-        userService.create.mockResolvedValue({ name: 'Test User', email: 'test@example.com' });
+        (userService.create as jest.Mock).mockResolvedValue({ name: 'Test User', email: 'test@example.com' });
 
         const result = await createUser({}, mockFormData);
 

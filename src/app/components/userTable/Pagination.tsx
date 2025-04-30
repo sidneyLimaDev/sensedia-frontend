@@ -15,7 +15,7 @@ const Pagination = ({ currentPage, totalPages, totalFilteredUsers, handlePageCha
     const [isSelectOpen, setIsSelectOpen] = useState(false);
 
     return (
-        <div className="flex items-center justify-between pt-6">
+        <div className="flex justify-between pt-6 flex-col md:flex-row gap-4 items-start md:items-center">
             {/* Lado esquerdo com largura fixa */}
             <div className="flex items-center gap-1 w-48">
                 <span className="text-sm text-sensedia-gray-medium">TOTAL {totalFilteredUsers}</span>
@@ -85,7 +85,7 @@ const Pagination = ({ currentPage, totalPages, totalFilteredUsers, handlePageCha
             </div>
 
             {/* Lado direito com a mesma largura do lado esquerdo */}
-            <div className="flex items-center justify-end w-48">
+            <div className="flex md:items-center md:justify-end w-48">
                 <span className="text-sm text-gray-600 w-18">IR PARA A PÁGINA</span>
                 <div className="relative">
                     <select

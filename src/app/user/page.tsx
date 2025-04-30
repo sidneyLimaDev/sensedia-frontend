@@ -10,7 +10,7 @@ const page = () => {
         <div>
             <div className="bg-sensedia-purple-secundary text-white p-8">
                 <div className="max-w-[875px] mx-auto">
-                    <div className='flex justify-between items-center'>
+                    <div className='flex justify-between md:items-center flex-col md:flex-row gap-3 md:gap-0'>
                         <BannerItem title={'Tipo de Quadra'} description={'Society'} Icon={Dribble} />
                         <BannerItem title={'Nível'} description={'Semi-Profissional'} Icon={AlignLeft} />
                         <BannerItem title={'Vitórias'} description={'345'} Icon={Trophy} />
@@ -18,7 +18,7 @@ const page = () => {
                 </div>
             </div>
             <div>
-                <div className="max-w-[875px] mx-auto mt-6">
+                <div className="max-w-[875px] mx-auto mt-6 p-4 md:p-0">
                     <h1 className="text-3xl font-medium  mb-10">Usuários</h1>
                     <UserTablePage />
                 </div>

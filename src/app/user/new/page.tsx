@@ -8,7 +8,7 @@ import GrinAlt from '@/assets/grin-alt.svg'
 const page = () => {
     return (
         <div>
-            <div className='max-w-[875px] mx-auto'>
+            <div className='max-w-[875px] mx-auto p-4 md:p-0'>
                 <h1 className='text-3xl font-medium mt-8'>Registro</h1>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-8">
                     <BannerItemSecundary title={'Precisa de ajuda?'} description={'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} Icon={LifeRing} />
@@ -16,7 +16,7 @@ const page = () => {
                     <BannerItemSecundary title={'O que está acontecendo?...'} description={'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} Icon={GrinAlt} />
                 </div>
             </div>
-            <div className='flex justify-center max-w-[875px] mx-auto'>
+            <div className='flex justify-center max-w-[875px] mx-auto p-4 md:p-0'>
                 <FormRegister />
             </div>
 

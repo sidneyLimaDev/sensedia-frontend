@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Componente Breadcrumbs deve corresponder ao snapshot 1`] = `
+<div>
+  <div
+    class="flex items-center gap-2 text-sm text-gray-600"
+  >
+    <img
+      alt=""
+      src="[object Object]"
+      width="6"
+    />
+    <a
+      class="hover:underline capitalize"
+      href="/user"
+    >
+      user
+    </a>
+    <img
+      alt=""
+      src="[object Object]"
+      width="6"
+    />
+    <a
+      class="hover:underline capitalize"
+      href="/user/form"
+    >
+      form
+    </a>
+    <img
+      alt=""
+      src="[object Object]"
+      width="6"
+    />
+    <span
+      class="text-gray-400 capitalize"
+    >
+      novo
+    </span>
+  </div>
+</div>
+`;
